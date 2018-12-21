@@ -35,6 +35,10 @@ export default class Form extends React.Component {
         this.setState({error: false});
     };
 
+    logOut = () => {
+       this.setState({open:true,username:"",inputname:""});
+    };
+
     state = {
         open: true,
         error: false,
@@ -59,7 +63,7 @@ export default class Form extends React.Component {
 
     onSubmit = e => {
         e.preventDefault();
-        if (this.state.value > -1) {
+        if (this.state.value > 0) {
             this.props.onSubmit(this.state);
             this.setState({
                 username: "",
@@ -198,8 +202,10 @@ export default class Form extends React.Component {
     logoutButton() {
         return(
             <div>
-                <Button variant="contained">
-                    Default
+                <Button variant="contained"
+                        onClick = {this.logOut}
+                        style={this.pStyle}>
+                    Log Out
                 </Button>
             </div>
 
@@ -209,6 +215,12 @@ export default class Form extends React.Component {
 
 
     }
+
+    pStyle = {
+        position: 'absolute',
+        top:0,
+        right:0
+    };
 
 
     submitError() {
