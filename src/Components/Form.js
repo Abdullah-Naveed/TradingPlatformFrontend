@@ -20,6 +20,7 @@ import Dialog from "@material-ui/core/Dialog/Dialog";
 export default class Form extends React.Component {
     componentDidMount() {
         this.usernameInput();
+        this.currentPrice();
     }
 
 
@@ -66,7 +67,6 @@ export default class Form extends React.Component {
         if (this.state.value > 0) {
             this.props.onSubmit(this.state);
             this.setState({
-                username: "",
                 coin: "",
                 quantity: "",
                 value: 1
@@ -143,6 +143,7 @@ export default class Form extends React.Component {
     async currentPrice() {
         var result = await fetch('http://localhost:8761/cmc/coinInfo?coin=' + this.state.coin)
             .then(function (response) {
+                console.log(response.json());
                 return response.json();
             })
             .then(function (data) {
