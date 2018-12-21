@@ -4,10 +4,12 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.7.0",
+    "@material-ui/icons": "^3.0.1",
     "material-ui": "^0.20.2",
     "prop-types": "latest",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-number-format": "^4.0.5",
     "react-scripts": "2.1.1",
     "react-tap-event-plugin": "^3.0.3",
     "react-timer-mixin": "^0.13.4"

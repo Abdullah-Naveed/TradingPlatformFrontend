@@ -5,18 +5,41 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
-import Timer from 'react-timer-mixin';
+import DialogActions from "@material-ui/core/DialogActions/DialogActions";
+import DialogContentText from "@material-ui/core/DialogContentText/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent/DialogContent";
+import Dialog from "@material-ui/core/Dialog/Dialog";
+
+
+
+
+
 
 
 export default class Form extends React.Component {
     componentDidMount() {
-        // Timer.setInterval(() => {
-        //     this.currentPrice()
-        // }, 2000)
+        this.usernameInput();
     }
 
+
+    handleClose = () => {
+
+        if (this.state.inputname.toLowerCase() === "socketboy12" ||
+            this.state.inputname.toLowerCase() === "rmi_king" ||
+            this.state.inputname.toLowerCase() === "soap-lover17" ||
+            this.state.inputname.toLowerCase() === "rest_is_the_best") {
+            this.setState({open: false});
+            this.setState({username: this.state.inputname})
+        }
+        this.setState({error: false});
+    };
+
     state = {
+        open: true,
+        error: false,
         username: "",
+        inputname: "",
         coin: "BTC",
         quantity: "",
         value: "",
@@ -30,36 +53,43 @@ export default class Form extends React.Component {
 
     };
 
-    onSubmit = e => {
-        e.preventDefault();
-        this.props.onSubmit(this.state);
-        this.setState({
-            username: "",
-            coin: "",
-            quantity: "",
-            value: 1
-        });
+    login = e => {
+        this.setState({inputname: e})
     };
 
+    onSubmit = e => {
+        e.preventDefault();
+        if (this.state.value > -1) {
+            this.props.onSubmit(this.state);
+            this.setState({
+                username: "",
+                coin: "",
+                quantity: "",
+                value: 1
+            });
+        } else {
+            this.setState({error: true})
+        }
+    };
 
     render() {
-
-
         return (
             <form>
-                <TextField
-                    name="username"
-                    floatingLabelText="Username"
-                    value={this.state.username}
-                    onChange={e => this.change(e)}
-                    floatingLabelFixed
+                <div>{this.usernameInput()}</div>
+                <div>{this.submitError()}</div>
+                <div>{this.logoutButton()}</div>
+                <TextField readOnly
+                           name="username"
+                           floatingLabelText="Username"
+                           value={this.state.username}
+                    // onChange={e => this.change(e)}
+                           floatingLabelFixed
                 />
                 <br/>
                 <FormControl>
                     <InputLabel>Coin</InputLabel>
                     <Select
                         value={this.state.coin}
-                        onClose={this.currentPrice()}
                         onChange={e => this.change(e)}
                         inputProps={{
                             name: 'coin',
@@ -79,6 +109,8 @@ export default class Form extends React.Component {
                 <br/>
                 <TextField
                     name="quantity"
+                    type="number"
+                    required
                     hintText="Amount to Sell"
                     floatingLabelText="Quantity"
                     autoComplete="off"
@@ -116,5 +148,86 @@ export default class Form extends React.Component {
         return result
     }
 
+    usernameInput() {
+        if (this.state.open === true) {
+            return (
+                <div>
+                    <Dialog
+                        open={this.state.open}
+                        onClose={this.handleClose}
+                        disableBackdropClick={true}
+                        aria-labelledby="form-dialog-title"
+                    >
+                        <DialogTitle id="form-dialog-title">Login</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                Please enter a valid username
+                            </DialogContentText>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                value={this.state.inputname}
+                                onChange={e => this.login(e.target.value)}
+                                label="Username"
+                                fullWidth
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                        this.handleClose()
+                                    }
+                                }
+                                }
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleClose} color="primary">
+                                Enter
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+            );
+        }
+    }
 
+    logoutButton() {
+        return(
+            <div>
+                <Button variant="contained">
+                    Default
+                </Button>
+            </div>
+
+
+
+        )
+
+
+    }
+
+
+    submitError() {
+        return (
+            <div>
+                <Dialog
+                    open={this.state.error}
+                    onClose={this.handleClose}
+                    aria-labelledby="form-dialog-title"
+                >
+                    <DialogTitle id="form-dialog-title">Error</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Fill in missing values
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                            OK
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        );
+    }
 }
+
+
