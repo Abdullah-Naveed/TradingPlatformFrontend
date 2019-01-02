@@ -7,9 +7,8 @@ import Form from "./Components/Form";
 import Table from "./Components/Table";
 
 
-class App extends Component {
 
-    static user = "";
+class App extends Component {
 
     state = {
         data: []
@@ -18,7 +17,7 @@ class App extends Component {
     remove = i => {
         console.log("removed");
         console.log(this.state.data[i]);
-        console.log(App.user);
+        console.log(Form.user);
         fetch('http://localhost:8761/user/buy', {
             method: 'POST',
             mode: 'cors',
@@ -29,7 +28,7 @@ class App extends Component {
             body: JSON.stringify({
                 id: this.state.data[i].id,
                 seller: this.state.data[i].inputname,
-                buyer: App.user,
+                buyer: Form.user,
                 coinSymbol: this.state.data[i].coin,
                 amountDollar: this.state.data[i].value,
                 amountCoin: this.state.data[i].quantity,

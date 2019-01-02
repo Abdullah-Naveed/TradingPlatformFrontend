@@ -11,11 +11,12 @@ import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import Map from "collections/map";
-import App from "../App";
+import {user} from "../App";
 
 
 export default class Form extends React.Component {
 
+    static user = "testUser";
     map = new Map();
 
     componentDidMount() {
@@ -64,7 +65,9 @@ export default class Form extends React.Component {
     };
 
     saveUser = e => {
-        App.user = e;
+        Form.user = e;
+        console.log(Form.user);
+        console.log("FormSaveUser");
         fetch('http://localhost:8761/user/loginUser?userName='+e);
     };
 
@@ -211,14 +214,18 @@ export default class Form extends React.Component {
                                 fullWidth
                                 onKeyPress={(e) => {
                                     if (e.key === 'Enter') {
-                                        this.handleClose()
+                                        this.saveUser(e.target.value);
+                                        this.handleClose();
                                     }
                                 }
                                 }
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={this.handleClose} color="primary">
+                            <Button onClick={e => {
+                                this.handleClose();
+                                // this.saveUser(e.target.value);
+                            }} color="primary">
                                 Enter
                             </Button>
                         </DialogActions>
