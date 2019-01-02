@@ -7,7 +7,6 @@ import {
     TableRow,
     TableRowColumn
 } from "material-ui/Table";
-import TrashIcon from "material-ui/svg-icons/action/delete";
 import Button from "@material-ui/core/Button/Button";
 
 

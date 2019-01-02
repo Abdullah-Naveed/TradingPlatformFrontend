@@ -11,6 +11,7 @@ import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import Map from "collections/map";
+import App from "../App";
 
 
 export default class Form extends React.Component {
@@ -30,7 +31,7 @@ export default class Form extends React.Component {
             this.state.inputname.toLowerCase() === "soap-lover17" ||
             this.state.inputname.toLowerCase() === "rest_is_the_best") {
             this.setState({open: false});
-            this.setState({username: this.state.inputname})
+            this.setState({username: this.state.inputname});
         }
         this.setState({error: false});
     };
@@ -40,6 +41,7 @@ export default class Form extends React.Component {
     };
 
     state = {
+        id: "1",
         open: true,
         error: false,
         username: "",
@@ -47,7 +49,7 @@ export default class Form extends React.Component {
         coin: "BTC",
         quantity: "",
         value: "",
-        price: ""
+        price: "n"
     };
 
     change = e => {
@@ -58,16 +60,42 @@ export default class Form extends React.Component {
     };
 
     login = e => {
-        this.setState({inputname: e})
+        this.setState({inputname: e});
+    };
+
+    saveUser = e => {
+        App.user = e;
+        fetch('http://localhost:8761/user/loginUser?userName='+e);
     };
 
     onSubmit = e => {
         e.preventDefault();
         if (this.state.value > 0) {
+            const min = 1;
+            const max = 1000;
+            const rand = min + Math.random() * (max - min);
+            this.state.id = rand;
+            fetch('http://localhost:8761/orderbook/sell', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: rand,
+                    seller: this.state.username,
+                    buyer: '',
+                    coinSymbol: this.state.coin,
+                    amountDollar: this.state.value,
+                    amountCoin: this.state.quantity,
+                })
+            });
             this.props.onSubmit(this.state);
             this.setState({
-                username: "",
-                coin: "",
+                id: "",
+                // username: "",
+                // coin: "",
                 quantity: "",
                 value: 1
             });
@@ -178,6 +206,7 @@ export default class Form extends React.Component {
                                 margin="dense"
                                 value={this.state.inputname}
                                 onChange={e => this.login(e.target.value)}
+                                onBlur={e => this.saveUser(e.target.value)}
                                 label="Username"
                                 fullWidth
                                 onKeyPress={(e) => {
@@ -208,12 +237,7 @@ export default class Form extends React.Component {
                     Log Out
                 </Button>
             </div>
-
-
-
         )
-
-
     }
 
     pStyle = {
