@@ -41,11 +41,11 @@ class App extends Component {
             },
             body: JSON.stringify({
                 id: this.state.data[i].id,
-                seller: this.state.data[i].inputname,
+                seller: this.state.data[i].seller,
                 buyer: Form.user,
-                coinSymbol: this.state.data[i].coin,
-                amountDollar: this.state.data[i].value,
-                amountCoin: this.state.data[i].quantity,
+                coinSymbol: this.state.data[i].coinSymbol,
+                amountDollar: this.state.data[i].amountDollar,
+                amountCoin: this.state.data[i].amountCoin,
             })
         });
         this.setState(state => ({
