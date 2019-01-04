@@ -9,12 +9,13 @@ import {
 } from "material-ui/Table";
 import Button from "@material-ui/core/Button/Button";
 
+const keys = ["id", "seller", "coinSymbol", "amountCoin", "amountDollar"];
 
 const row = (x, i, header,remove) =>
     <TableRow key={`tr-${i}`}>
         {header.map((y, k) =>
             <TableRowColumn key={`trc-${k}`}>
-                {x[y.prop]}
+                {x[keys[k]]}
             </TableRowColumn>
         )}
         <TableRowColumn>

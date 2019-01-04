@@ -14,10 +14,24 @@ class App extends Component {
         data: []
     };
 
+    componentDidMount() {
+        this.recheckOrderBook();
+    }
+
+    recheckOrderBook = () => {
+        setInterval(() => {
+            fetch('http://localhost:8761/orderbook/transactions').then((response) => {
+                response.json().then((response2) => {
+                    let transactions = response2.sortedTransactions;
+                    this.setState({
+                        data: transactions
+                    });
+                })
+            })
+        },2000);
+    };
+
     remove = i => {
-        console.log("removed");
-        console.log(this.state.data[i]);
-        console.log(Form.user);
         fetch('http://localhost:8761/user/buy', {
             method: 'POST',
             mode: 'cors',

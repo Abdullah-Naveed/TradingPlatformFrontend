@@ -66,8 +66,6 @@ export default class Form extends React.Component {
 
     saveUser = e => {
         Form.user = e;
-        console.log(Form.user);
-        console.log("FormSaveUser");
         fetch('http://localhost:8761/user/loginUser?userName='+e);
     };
 
