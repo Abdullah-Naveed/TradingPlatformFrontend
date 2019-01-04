@@ -50,7 +50,8 @@ export default class Form extends React.Component {
         coin: "BTC",
         quantity: "",
         value: "",
-        price: "n"
+        price: "n",
+        balance: ""
     };
 
     change = e => {
@@ -112,10 +113,17 @@ export default class Form extends React.Component {
                 <div>{this.submitError()}</div>
                 <div>{this.logoutButton()}</div>
                 <TextField readOnly
+                           name="balance"
+                           floatingLabelText="Balance"
+                           value={this.state.balance}
+                            // onChange={e => this.change(e)}
+                           floatingLabelFixed
+                />
+                <TextField readOnly
                            name="username"
                            floatingLabelText="Username"
                            value={this.state.username}
-                    // onChange={e => this.change(e)}
+                            // onChange={e => this.change(e)}
                            floatingLabelFixed
                 />
                 <br/>
