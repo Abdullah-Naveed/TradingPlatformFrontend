@@ -23,6 +23,17 @@ export default class Form extends React.Component {
         this.map = this.currentPrice();
     }
 
+    componentWillMount() {
+        this.map.add("BTC", 3855.15832672);
+        this.map.add("ETH", 154.212772221);
+        this.map.add("TRX", 0.0216297193366);
+        this.map.add("MIOTA", 0.376894697331);
+        this.map.add("LTC", 32.3408920678);
+        this.map.add("XRP", 0.35803435642);
+        this.map.add("XLM", 0.115525502213);
+        this.map.add("BCH", 161.540193458);
+    }
+
 
     handleClose = () => {
 
