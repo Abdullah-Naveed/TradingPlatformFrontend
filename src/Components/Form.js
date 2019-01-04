@@ -11,7 +11,6 @@ import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import Map from "collections/map";
-import {user} from "../App";
 
 
 export default class Form extends React.Component {
@@ -33,6 +32,7 @@ export default class Form extends React.Component {
             this.state.inputname.toLowerCase() === "rest_is_the_best") {
             this.setState({open: false});
             this.setState({username: this.state.inputname});
+            Form.user = this.state.inputname;
         }
         this.setState({error: false});
     };
