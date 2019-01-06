@@ -17,6 +17,7 @@ export default class Form extends React.Component {
 
     static user = "testUser";
     map = new Map();
+    static balance = 0;
 
     componentDidMount() {
         this.usernameInput();
@@ -33,7 +34,6 @@ export default class Form extends React.Component {
         this.map.add("XLM", 0.115525502213);
         this.map.add("BCH", 161.540193458);
     }
-
 
     handleClose = () => {
 
@@ -62,7 +62,6 @@ export default class Form extends React.Component {
         quantity: "",
         value: "",
         price: "n",
-        balance: ""
     };
 
     change = e => {
@@ -79,14 +78,24 @@ export default class Form extends React.Component {
     saveUser = e => {
         Form.user = e;
         fetch('http://localhost:8761/user/loginUser?userName='+e);
+        Form.getBalance(Form.user)
     };
+
+    static async getBalance(username) {
+        fetch("http://localhost:8761/user/totalBalance?userName="+username).then(function (response) {
+            response.text().then(function (value) {
+                console.log(value);
+                Form.balance = value;
+            });
+        });
+    }
 
     onSubmit = e => {
         e.preventDefault();
         if (this.state.value > 0) {
             const min = 1;
             const max = 1000;
-            const rand = min + Math.random() * (max - min);
+            const rand = Math.floor(min + Math.random() * (max - min));
             this.state.id = rand;
             fetch('http://localhost:8761/orderbook/sell', {
                 method: 'POST',
@@ -125,8 +134,8 @@ export default class Form extends React.Component {
                 <div>{this.logoutButton()}</div>
                 <TextField readOnly
                            name="balance"
-                           floatingLabelText="Balance"
-                           value={this.state.balance}
+                           floatingLabelText="Balance (Dollars)"
+                           value={Form.balance}
                             // onChange={e => this.change(e)}
                            floatingLabelFixed
                 />

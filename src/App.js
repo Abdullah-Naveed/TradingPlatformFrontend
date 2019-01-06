@@ -47,10 +47,11 @@ class App extends Component {
                 amountDollar: this.state.data[i].amountDollar,
                 amountCoin: this.state.data[i].amountCoin,
             })
-        });
+        }).then(() => Form.getBalance(Form.user));
         this.setState(state => ({
             data: state.data.filter((row, j) => j !== i)
         }));
+
     };
 
     render() {
