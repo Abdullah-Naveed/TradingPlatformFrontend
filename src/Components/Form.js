@@ -17,12 +17,23 @@ export default class Form extends React.Component {
 
     static user = "testUser";
     map = new Map();
+    static balance = 0;
 
     componentDidMount() {
         this.usernameInput();
         this.map = this.currentPrice();
     }
 
+    componentWillMount() {
+        this.map.add("BTC", 3855.15832672);
+        this.map.add("ETH", 154.212772221);
+        this.map.add("TRX", 0.0216297193366);
+        this.map.add("MIOTA", 0.376894697331);
+        this.map.add("LTC", 32.3408920678);
+        this.map.add("XRP", 0.35803435642);
+        this.map.add("XLM", 0.115525502213);
+        this.map.add("BCH", 161.540193458);
+    }
 
     handleClose = () => {
 
@@ -51,7 +62,6 @@ export default class Form extends React.Component {
         quantity: "",
         value: "",
         price: "n",
-        balance: ""
     };
 
     change = e => {
@@ -68,14 +78,24 @@ export default class Form extends React.Component {
     saveUser = e => {
         Form.user = e;
         fetch('http://localhost:8761/user/loginUser?userName='+e);
+        Form.getBalance(Form.user)
     };
+
+    static async getBalance(username) {
+        fetch("http://localhost:8761/user/totalBalance?userName="+username).then(function (response) {
+            response.text().then(function (value) {
+                console.log(value);
+                Form.balance = value;
+            });
+        });
+    }
 
     onSubmit = e => {
         e.preventDefault();
         if (this.state.value > 0) {
             const min = 1;
             const max = 1000;
-            const rand = min + Math.random() * (max - min);
+            const rand = Math.floor(min + Math.random() * (max - min));
             this.state.id = rand;
             fetch('http://localhost:8761/orderbook/sell', {
                 method: 'POST',
@@ -119,6 +139,7 @@ export default class Form extends React.Component {
                             // onChange={e => this.change(e)}
                            floatingLabelFixed
                 />
+                <br/>
                 <div>{this.displayBalance()}</div>
                 <br/>
                 <FormControl>
@@ -247,12 +268,12 @@ export default class Form extends React.Component {
         )
     }
 
-    displayBalance(){
+    displayBalance() {
         return(
             <TextField readOnly
                        name="balance"
-                       floatingLabelText="Balance"
-                       value={this.state.balance}
+                       floatingLabelText="Balance (Dollars)"
+                       value={Form.balance}
                 // onChange={e => this.change(e)}
                        floatingLabelFixed
             />
