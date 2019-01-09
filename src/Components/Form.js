@@ -10,17 +10,16 @@ import DialogContentText from "@material-ui/core/DialogContentText/DialogContent
 import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import Dialog from "@material-ui/core/Dialog/Dialog";
-
-
-
-
-
+import Map from "collections/map";
 
 
 export default class Form extends React.Component {
+
+    map = new Map();
+
     componentDidMount() {
         this.usernameInput();
-        this.currentPrice();
+        this.map = this.currentPrice();
     }
 
 
@@ -67,6 +66,7 @@ export default class Form extends React.Component {
         if (this.state.value > 0) {
             this.props.onSubmit(this.state);
             this.setState({
+                username: "",
                 coin: "",
                 quantity: "",
                 value: 1
@@ -126,7 +126,7 @@ export default class Form extends React.Component {
                 <TextField
                     name="value"
                     floatingLabelText="Value"
-                    value={this.state.value = this.state.quantity * this.state.price}
+                    value={this.state.value = this.state.quantity * this.map.get(this.state.coin)}
                     onChange={e => this.change(e)}
                     floatingLabelFixed
                 />
@@ -141,16 +141,21 @@ export default class Form extends React.Component {
 
 
     async currentPrice() {
-        var result = await fetch('http://localhost:8761/cmc/coinInfo?coin=' + this.state.coin)
+        this.map = await fetch('http://localhost:8761/cmc/coinList')
             .then(function (response) {
-                console.log(response.json());
-                return response.json();
-            })
-            .then(function (data) {
-                return data.price
+                let map2 = new Map();
+                response.text().then(text => {
+                    const array = text.split("\n");
+                    array.pop();
+                    for(let i = 0; i<array.length; i++) {
+                        map2.add(array[i+1],array[i]);
+                        i++;
+                    }
+                    return map2;
+                });
+                return map2;
             });
-        this.setState({price: result});
-        return result
+        console.log(this.map)
     }
 
     usernameInput() {
