@@ -7,23 +7,26 @@ import {
     TableRow,
     TableRowColumn
 } from "material-ui/Table";
-import TrashIcon from "material-ui/svg-icons/action/delete";
 import Button from "@material-ui/core/Button/Button";
 
+const keys = ["id", "seller", "coinSymbol", "amountCoin", "amountDollar"];
+
+function addButton(k,remove,i) {
+    if (k==="amountDollar") {
+        return <Button variant="contained" color = "primary" onClick={() => remove(i)}> Buy </Button>
+    }
+}
 
 const row = (x, i, header,remove) =>
     <TableRow key={`tr-${i}`}>
         {header.map((y, k) =>
             <TableRowColumn key={`trc-${k}`}>
-                {x[y.prop]}
-            </TableRowColumn>
+                {x[keys[k]]}
+                {addButton(keys[k],remove,i)}
+            </TableRowColumn>,
+
         )}
-        <TableRowColumn>
-            <Button variant="contained" color = "primary"
-                    onClick={() => remove(i)}>
-                Buy
-            </Button>
-        </TableRowColumn>
+
     </TableRow>;
 
 export default ({ data, header, remove }) =>

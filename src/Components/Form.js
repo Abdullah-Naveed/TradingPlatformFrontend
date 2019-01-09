@@ -15,13 +15,25 @@ import Map from "collections/map";
 
 export default class Form extends React.Component {
 
+    static user = "testUser";
     map = new Map();
+    static balance = 0;
 
     componentDidMount() {
         this.usernameInput();
         this.map = this.currentPrice();
     }
 
+    componentWillMount() {
+        this.map.add("BTC", 3855.15832672);
+        this.map.add("ETH", 154.212772221);
+        this.map.add("TRX", 0.0216297193366);
+        this.map.add("MIOTA", 0.376894697331);
+        this.map.add("LTC", 32.3408920678);
+        this.map.add("XRP", 0.35803435642);
+        this.map.add("XLM", 0.115525502213);
+        this.map.add("BCH", 161.540193458);
+    }
 
     handleClose = () => {
 
@@ -30,7 +42,8 @@ export default class Form extends React.Component {
             this.state.inputname.toLowerCase() === "soap-lover17" ||
             this.state.inputname.toLowerCase() === "rest_is_the_best") {
             this.setState({open: false});
-            this.setState({username: this.state.inputname})
+            this.setState({username: this.state.inputname});
+            Form.user = this.state.inputname;
         }
         this.setState({error: false});
     };
@@ -40,6 +53,7 @@ export default class Form extends React.Component {
     };
 
     state = {
+        id: "1",
         open: true,
         error: false,
         username: "",
@@ -47,7 +61,7 @@ export default class Form extends React.Component {
         coin: "BTC",
         quantity: "",
         value: "",
-        price: ""
+        price: "n",
     };
 
     change = e => {
@@ -58,16 +72,52 @@ export default class Form extends React.Component {
     };
 
     login = e => {
-        this.setState({inputname: e})
+        this.setState({inputname: e});
     };
+
+    saveUser = e => {
+        Form.user = e;
+        fetch('http://localhost:8761/user/loginUser?userName='+e);
+        Form.getBalance(Form.user)
+    };
+
+    static async getBalance(username) {
+        fetch("http://localhost:8761/user/totalBalance?userName="+username).then(function (response) {
+            response.text().then(function (value) {
+                console.log(value);
+                Form.balance = value;
+            });
+        });
+    }
 
     onSubmit = e => {
         e.preventDefault();
         if (this.state.value > 0) {
+            const min = 1;
+            const max = 1000;
+            const rand = Math.floor(min + Math.random() * (max - min));
+            this.state.id = rand;
+            fetch('http://localhost:8761/orderbook/sell', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: rand,
+                    seller: this.state.username,
+                    buyer: '',
+                    coinSymbol: this.state.coin,
+                    amountDollar: this.state.value,
+                    amountCoin: this.state.quantity,
+                })
+            });
             this.props.onSubmit(this.state);
             this.setState({
-                username: "",
-                coin: "",
+                id: "",
+                // username: "",
+                // coin: "",
                 quantity: "",
                 value: 1
             });
@@ -86,9 +136,11 @@ export default class Form extends React.Component {
                            name="username"
                            floatingLabelText="Username"
                            value={this.state.username}
-                    // onChange={e => this.change(e)}
+                            // onChange={e => this.change(e)}
                            floatingLabelFixed
                 />
+                <br/>
+                <div>{this.displayBalance()}</div>
                 <br/>
                 <FormControl>
                     <InputLabel>Coin</InputLabel>
@@ -178,18 +230,23 @@ export default class Form extends React.Component {
                                 margin="dense"
                                 value={this.state.inputname}
                                 onChange={e => this.login(e.target.value)}
+                                onBlur={e => this.saveUser(e.target.value)}
                                 label="Username"
                                 fullWidth
                                 onKeyPress={(e) => {
                                     if (e.key === 'Enter') {
-                                        this.handleClose()
+                                        this.saveUser(e.target.value);
+                                        this.handleClose();
                                     }
                                 }
                                 }
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={this.handleClose} color="primary">
+                            <Button onClick={e => {
+                                this.handleClose();
+                                // this.saveUser(e.target.value);
+                            }} color="primary">
                                 Enter
                             </Button>
                         </DialogActions>
@@ -208,12 +265,19 @@ export default class Form extends React.Component {
                     Log Out
                 </Button>
             </div>
-
-
-
         )
+    }
 
-
+    displayBalance() {
+        return(
+            <TextField readOnly
+                       name="balance"
+                       floatingLabelText="Balance (Dollars)"
+                       value={Form.balance}
+                       onChange={e => this.change(e)}
+                       floatingLabelFixed
+            />
+        )
     }
 
     pStyle = {
