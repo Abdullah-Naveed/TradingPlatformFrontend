@@ -16,6 +16,7 @@ class App extends Component {
 
     componentDidMount() {
         this.recheckOrderBook();
+        this.recheckBalance();
     }
 
     recheckOrderBook = () => {
@@ -30,6 +31,12 @@ class App extends Component {
             })
         },2000);
     };
+
+    recheckBalance = () => {
+        setInterval(() => {
+            Form.getBalance(Form.user)
+        },2000);
+    }
 
     remove = i => {
         fetch('http://localhost:8761/user/buy', {

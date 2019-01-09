@@ -274,7 +274,7 @@ export default class Form extends React.Component {
                        name="balance"
                        floatingLabelText="Balance (Dollars)"
                        value={Form.balance}
-                // onChange={e => this.change(e)}
+                       onChange={e => this.change(e)}
                        floatingLabelFixed
             />
         )
