@@ -15,7 +15,7 @@ import Map from "collections/map";
 
 export default class Form extends React.Component {
 
-    static user = "testUser";
+    static user = "soap-lover17";
     map = new Map();
     static balance = 0;
 
@@ -61,7 +61,7 @@ export default class Form extends React.Component {
         coin: "BTC",
         quantity: "",
         value: "",
-        price: "n",
+        price: "n"
     };
 
     change = e => {
@@ -178,7 +178,7 @@ export default class Form extends React.Component {
                 <TextField
                     name="value"
                     floatingLabelText="Value"
-                    value={this.state.value = this.state.quantity * this.map.get(this.state.coin)}
+                    value={this.state.value = this.state.quantity * this.getValue()}
                     onChange={e => this.change(e)}
                     floatingLabelFixed
                 />
@@ -191,6 +191,32 @@ export default class Form extends React.Component {
         );
     }
 
+    getValue() {
+        try{
+            return this.map.get(this.state.coin);
+        }catch (e) {
+            switch(this.state.coin) {
+                case 'BTC':
+                    return 3855.15832672;
+                case 'ETH':
+                    return 154.212772221;
+                case 'TRX':
+                    return 0.0216297193366;
+                case 'MIOTA':
+                    return 0.376894697331;
+                case 'LTC':
+                    return 32.3408920678;
+                case 'XRP':
+                    return 0.35803435642;
+                case 'XLM':
+                    return 0.115525502213;
+                case 'BCH':
+                    return 161.540193458;
+                default:
+                    return 0;
+            }
+        }
+    }
 
     async currentPrice() {
         this.map = await fetch('http://localhost:8761/cmc/coinList')

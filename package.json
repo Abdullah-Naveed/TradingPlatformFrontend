@@ -9,9 +9,11 @@
     "material-ui": "^0.20.2",
     "prop-types": "latest",
     "react": "^16.7.0",
+    "react-delay": "^0.1.0",
     "react-dom": "^16.7.0",
+    "react-native-simple-dialogs": "^1.0.0",
     "react-number-format": "^4.0.5",
-    "react-scripts": "2.1.1",
+    "react-scripts": "^2.1.3",
     "react-tap-event-plugin": "^3.0.3",
     "react-timer-mixin": "^0.13.4"
   },
