@@ -49,6 +49,10 @@ export default class Form extends React.Component {
         this.setState({error: false});
     };
 
+    handleClosed = () => {
+        this.setState({openCoins: false});
+    };
+
     logOut = () => {
         this.setState({open: true, username: "", inputname: ""});
     };
@@ -63,7 +67,7 @@ export default class Form extends React.Component {
         quantity: "",
         value: "",
         price: "n",
-        // openCoins: false
+        openCoins: false
     };
 
     change = e => {
@@ -94,6 +98,7 @@ export default class Form extends React.Component {
     static async getCryptoBalance(username, coin) {
         fetch("http://localhost:8761/user/balance?userName=" + username + "&symbol=" + coin).then(function (response) {
             response.text().then(function (value) {
+                // console.log(Form.cryptoBal);
                 Form.cryptoBal = value;
             });
         });
@@ -103,8 +108,10 @@ export default class Form extends React.Component {
     onSubmit = e => {
         e.preventDefault();
         if (this.state.value > 0) {
-            // if (Form.cryptoBal >= this.state.quantity) {
+            // if (this.state.quantity <= Form.cryptoBal) {
+            //     console.log("HERE");
             //     console.log(Form.cryptoBal);
+            //     console.log(this.state.quantity);
                 const min = 1;
                 const max = 1000;
                 const rand = Math.floor(min + Math.random() * (max - min));
@@ -125,7 +132,6 @@ export default class Form extends React.Component {
                         amountCoin: this.state.quantity,
                     })
                 });
-                // this.setState({openCoins: true});
 
                 this.props.onSubmit(this.state);
                 this.setState({
@@ -133,67 +139,51 @@ export default class Form extends React.Component {
                     quantity: "",
                     value: 1
                 });
+            // } else {
+            //     console.log("HERE2");
+            //     console.log(Form.cryptoBal);
+            //     console.log(this.state.quantity);
+            //     this.setState({openCoins: true})
             // }
         } else {
             this.setState({error: true})
         }
     };
 
-    // insufficientCoins() {
-    //     if (this.state.openCoins === true) {
-    //         return (
-    //             <div>
-    //                 <Dialog
-    //                     open={this.state.openCoins}
-    //                     // disableBackdropClick={true}
-    //                     aria-labelledby="form-dialog-title"
-    //                 >
-    //                     <DialogTitle id="form-dialog-title">Error</DialogTitle>
-    //                     <DialogContent>
-    //                         <DialogContentText>
-    //                             You have insufficient coins to make this transaction
-    //                         </DialogContentText>
-    //                     </DialogContent>
-    //                     <DialogActions>
-    //                         <Button onClick={e => {
-    //                             // this.saveUser(e.target.value);
-    //                         }} color="primary">
-    //                             OK
-    //                         </Button>
-    //                     </DialogActions>
-    //                 </Dialog>
-    //             </div>
-    //         );
-    //     }
-    // }
+    insufficientCoins() {
+        if (this.state.openCoins === true) {
+            return (
+                <div>
+                    <Dialog
+                        open={this.state.openCoins}
+                        onClose={this.handleClosed}
+                        // disableBackdropClick={true}
+                        aria-labelledby="form-dialog-title"
+                    >
+                        <DialogTitle id="form-dialog-title">Error</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                You have insufficient coins to make this transaction
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={e => {
+                                this.handleClosed();
+                                // this.saveUser(e.target.value);
+                            }} color="primary">
+                                OK
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+            );
+        }
+    }
 
     render() {
         return (
             <form>
-                {/*<div>*/}
-                    {/*<Dialog*/}
-                        {/*open={this.state.openCoins}*/}
-                        {/*// onClose={ () => {this.state.openCoins = false}}*/}
-                        {/*// disableBackdropClick={true}*/}
-                        {/*aria-labelledby="form-dialog-title"*/}
-                    {/*>*/}
-                        {/*<DialogTitle id="form-dialog-title">Error</DialogTitle>*/}
-                        {/*<DialogContent>*/}
-                            {/*<DialogContentText>*/}
-                                {/*You have insufficient coins to make this transaction*/}
-                            {/*</DialogContentText>*/}
-                        {/*</DialogContent>*/}
-                        {/*<DialogActions>*/}
-                            {/*<Button onClick={e => {*/}
-                                {/*// this.saveUser(e.target.value);*/}
-                                {/*e.openCoins = false;*/}
-                                {/*// this.state.openCoins = false;*/}
-                            {/*}} color="primary">*/}
-                                {/*OK*/}
-                            {/*</Button>*/}
-                        {/*</DialogActions>*/}
-                    {/*</Dialog>*/}
-                {/*</div>*/}
+                <div>{this.insufficientCoins()}</div>
                 <div>{this.usernameInput()}</div>
                 <div>{this.submitError()}</div>
                 <div>{this.logoutButton()}</div>
@@ -211,7 +201,7 @@ export default class Form extends React.Component {
                     <Select
                         value={this.state.coin}
                         onChange={e => this.change(e)}
-                        onClose={Form.getCryptoBalance(this.state.username, this.state.coin)}
+                        onClose={ Form.getCryptoBalance(this.state.username, this.state.coin)}
                         inputProps={{
                             name: 'coin',
                             id: 'coin-id',
@@ -258,10 +248,10 @@ export default class Form extends React.Component {
     }
 
     getValue() {
-        try{
+        try {
             return this.map.get(this.state.coin);
-        }catch (e) {
-            switch(this.state.coin) {
+        } catch (e) {
+            switch (this.state.coin) {
                 case 'BTC':
                     return 3855.15832672;
                 case 'ETH':
