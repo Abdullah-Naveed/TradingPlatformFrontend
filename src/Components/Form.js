@@ -18,6 +18,8 @@ export default class Form extends React.Component {
     static user = "testUser";
     map = new Map();
     static balance = 0;
+    static cryptoBal = 0;
+    static cryptoCoin = "BTC";
 
     componentDidMount() {
         this.usernameInput();
@@ -79,16 +81,26 @@ export default class Form extends React.Component {
         Form.user = e;
         fetch('http://localhost:8761/user/loginUser?userName='+e);
         Form.getBalance(Form.user)
+        // Form.getCryptoBalance(Form.user,this.state.coin)
     };
 
     static async getBalance(username) {
         fetch("http://localhost:8761/user/totalBalance?userName="+username).then(function (response) {
             response.text().then(function (value) {
-                console.log(value);
                 Form.balance = value;
             });
         });
     }
+
+    static async getCryptoBalance(username,coin) {
+        fetch("http://localhost:8761/user/balance?userName="+username+"&symbol="+coin).then(function (response) {
+            response.text().then(function (value) {
+                Form.cryptoBal = value;
+            });
+        });
+    }
+
+
 
     onSubmit = e => {
         e.preventDefault();
@@ -147,6 +159,7 @@ export default class Form extends React.Component {
                     <Select
                         value={this.state.coin}
                         onChange={e => this.change(e)}
+                        onClose={Form.getCryptoBalance(this.state.username,this.state.coin)}
                         inputProps={{
                             name: 'coin',
                             id: 'coin-id',
@@ -162,6 +175,7 @@ export default class Form extends React.Component {
                         <MenuItem value="XLM">XLM</MenuItem>
                     </Select>
                 </FormControl>
+                <div>{this.displayCryptoBal()}</div>
                 <br/>
                 <TextField
                     name="quantity"
@@ -178,7 +192,7 @@ export default class Form extends React.Component {
                 <TextField
                     name="value"
                     floatingLabelText="Value"
-                    value={this.state.value = this.state.quantity * this.map.get(this.state.coin)}
+                    value= {this.state.value = this.state.quantity * this.map.get(this.state.coin)}
                     onChange={e => this.change(e)}
                     floatingLabelFixed
                 />
@@ -207,7 +221,7 @@ export default class Form extends React.Component {
                 });
                 return map2;
             });
-        console.log(this.map)
+        // console.log(this.map)
     }
 
     usernameInput() {
@@ -274,6 +288,18 @@ export default class Form extends React.Component {
                        name="balance"
                        floatingLabelText="Balance (Dollars)"
                        value={Form.balance}
+                       onChange={e => this.change(e)}
+                       floatingLabelFixed
+            />
+        )
+    }
+
+    displayCryptoBal() {
+        return(
+            <TextField readOnly
+                       name="cryptoBal"
+                       floatingLabelText="Balance (Cryptocurrency)"
+                       value={Form.cryptoBal}
                        onChange={e => this.change(e)}
                        floatingLabelFixed
             />
