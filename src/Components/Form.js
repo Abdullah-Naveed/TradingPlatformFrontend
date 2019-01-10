@@ -18,6 +18,7 @@ export default class Form extends React.Component {
     static user = "soap-lover17";
     map = new Map();
     static balance = 0;
+    static cryptoBal = 0;
 
     componentDidMount() {
         this.usernameInput();
@@ -49,7 +50,7 @@ export default class Form extends React.Component {
     };
 
     logOut = () => {
-       this.setState({open:true,username:"",inputname:""});
+        this.setState({open: true, username: "", inputname: ""});
     };
 
     state = {
@@ -77,18 +78,26 @@ export default class Form extends React.Component {
 
     saveUser = e => {
         Form.user = e;
-        fetch('http://localhost:8761/user/loginUser?userName='+e);
+        fetch('http://localhost:8761/user/loginUser?userName=' + e);
         Form.getBalance(Form.user)
     };
 
     static async getBalance(username) {
-        fetch("http://localhost:8761/user/totalBalance?userName="+username).then(function (response) {
+        fetch("http://localhost:8761/user/totalBalance?userName=" + username).then(function (response) {
             response.text().then(function (value) {
-                console.log(value);
                 Form.balance = value;
             });
         });
     }
+
+    static async getCryptoBalance(username, coin) {
+        fetch("http://localhost:8761/user/balance?userName=" + username + "&symbol=" + coin).then(function (response) {
+            response.text().then(function (value) {
+                Form.cryptoBal = value;
+            });
+        });
+    }
+
 
     onSubmit = e => {
         e.preventDefault();
@@ -116,8 +125,6 @@ export default class Form extends React.Component {
             this.props.onSubmit(this.state);
             this.setState({
                 id: "",
-                // username: "",
-                // coin: "",
                 quantity: "",
                 value: 1
             });
@@ -136,7 +143,6 @@ export default class Form extends React.Component {
                            name="username"
                            floatingLabelText="Username"
                            value={this.state.username}
-                            // onChange={e => this.change(e)}
                            floatingLabelFixed
                 />
                 <br/>
@@ -147,6 +153,7 @@ export default class Form extends React.Component {
                     <Select
                         value={this.state.coin}
                         onChange={e => this.change(e)}
+                        onClose={Form.getCryptoBalance(this.state.username, this.state.coin)}
                         inputProps={{
                             name: 'coin',
                             id: 'coin-id',
@@ -162,6 +169,7 @@ export default class Form extends React.Component {
                         <MenuItem value="XLM">XLM</MenuItem>
                     </Select>
                 </FormControl>
+                <div>{this.displayCryptoBal()}</div>
                 <br/>
                 <TextField
                     name="quantity"
@@ -225,15 +233,14 @@ export default class Form extends React.Component {
                 response.text().then(text => {
                     const array = text.split("\n");
                     array.pop();
-                    for(let i = 0; i<array.length; i++) {
-                        map2.add(array[i+1],array[i]);
+                    for (let i = 0; i < array.length; i++) {
+                        map2.add(array[i + 1], array[i]);
                         i++;
                     }
                     return map2;
                 });
                 return map2;
             });
-        console.log(this.map)
     }
 
     usernameInput() {
@@ -271,7 +278,6 @@ export default class Form extends React.Component {
                         <DialogActions>
                             <Button onClick={e => {
                                 this.handleClose();
-                                // this.saveUser(e.target.value);
                             }} color="primary">
                                 Enter
                             </Button>
@@ -283,10 +289,10 @@ export default class Form extends React.Component {
     }
 
     logoutButton() {
-        return(
+        return (
             <div>
                 <Button variant="contained"
-                        onClick = {this.logOut}
+                        onClick={this.logOut}
                         style={this.pStyle}>
                     Log Out
                 </Button>
@@ -295,7 +301,7 @@ export default class Form extends React.Component {
     }
 
     displayBalance() {
-        return(
+        return (
             <TextField readOnly
                        name="balance"
                        floatingLabelText="Balance (Dollars)"
@@ -306,10 +312,22 @@ export default class Form extends React.Component {
         )
     }
 
+    displayCryptoBal() {
+        return (
+            <TextField readOnly
+                       name="cryptoBal"
+                       floatingLabelText="Balance (Cryptocurrency)"
+                       value={Form.cryptoBal}
+                       onChange={e => this.change(e)}
+                       floatingLabelFixed
+            />
+        )
+    }
+
     pStyle = {
         position: 'absolute',
-        top:0,
-        right:0
+        top: 0,
+        right: 0
     };
 
 
