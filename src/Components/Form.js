@@ -158,7 +158,7 @@ export default class Form extends React.Component {
                     <Select
                         value={this.state.coin}
                         onChange={e => this.change(e)}
-                        onClose={Form.getCryptoBalance(this.state.username, this.state.coin)}
+                        onClose={ Form.getCryptoBalance(this.state.username, this.state.coin)}
                         inputProps={{
                             name: 'coin',
                             id: 'coin-id',
