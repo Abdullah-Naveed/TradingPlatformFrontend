@@ -11,7 +11,6 @@ import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import Map from "collections/map";
-import swal from 'sweetalert';
 
 
 export default class Form extends React.Component {
@@ -103,7 +102,6 @@ export default class Form extends React.Component {
     onSubmit = e => {
         e.preventDefault();
         if (this.state.value > 0) {
-            if (Form.cryptoBal >= this.state.quantity) {
                 const min = 1;
                 const max = 1000;
                 const rand = Math.floor(min + Math.random() * (max - min));
@@ -130,9 +128,6 @@ export default class Form extends React.Component {
                     quantity: "",
                     value: 1
                 });
-            }else{
-                swal("Error!", "You have insufficient coins to make this transaction", "error");
-            }
         } else {
             this.setState({error: true})
         }
