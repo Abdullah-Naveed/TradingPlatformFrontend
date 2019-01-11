@@ -136,7 +136,6 @@ class App extends Component {
                         <DialogActions>
                             <Button onClick={e => {
                                 this.handleClose();
-                                // this.saveUser(e.target.value);
                             }} color="primary">
                                 OK
                             </Button>

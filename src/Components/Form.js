@@ -11,6 +11,7 @@ import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import Map from "collections/map";
+import swal from 'sweetalert';
 
 
 export default class Form extends React.Component {
@@ -63,7 +64,6 @@ export default class Form extends React.Component {
         quantity: "",
         value: "",
         price: "n",
-        // openCoins: false
     };
 
     change = e => {
@@ -103,8 +103,7 @@ export default class Form extends React.Component {
     onSubmit = e => {
         e.preventDefault();
         if (this.state.value > 0) {
-            // if (Form.cryptoBal >= this.state.quantity) {
-            //     console.log(Form.cryptoBal);
+            if (Form.cryptoBal >= this.state.quantity) {
                 const min = 1;
                 const max = 1000;
                 const rand = Math.floor(min + Math.random() * (max - min));
@@ -125,75 +124,23 @@ export default class Form extends React.Component {
                         amountCoin: this.state.quantity,
                     })
                 });
-                // this.setState({openCoins: true});
-
                 this.props.onSubmit(this.state);
                 this.setState({
                     id: "",
                     quantity: "",
                     value: 1
                 });
-            // }
+            }else{
+                swal("Error!", "You have insufficient coins to make this transaction", "error");
+            }
         } else {
             this.setState({error: true})
         }
     };
 
-    // insufficientCoins() {
-    //     if (this.state.openCoins === true) {
-    //         return (
-    //             <div>
-    //                 <Dialog
-    //                     open={this.state.openCoins}
-    //                     // disableBackdropClick={true}
-    //                     aria-labelledby="form-dialog-title"
-    //                 >
-    //                     <DialogTitle id="form-dialog-title">Error</DialogTitle>
-    //                     <DialogContent>
-    //                         <DialogContentText>
-    //                             You have insufficient coins to make this transaction
-    //                         </DialogContentText>
-    //                     </DialogContent>
-    //                     <DialogActions>
-    //                         <Button onClick={e => {
-    //                             // this.saveUser(e.target.value);
-    //                         }} color="primary">
-    //                             OK
-    //                         </Button>
-    //                     </DialogActions>
-    //                 </Dialog>
-    //             </div>
-    //         );
-    //     }
-    // }
-
     render() {
         return (
             <form>
-                {/*<div>*/}
-                    {/*<Dialog*/}
-                        {/*open={this.state.openCoins}*/}
-                        {/*// onClose={ () => {this.state.openCoins = false}}*/}
-                        {/*// disableBackdropClick={true}*/}
-                        {/*aria-labelledby="form-dialog-title"*/}
-                    {/*>*/}
-                        {/*<DialogTitle id="form-dialog-title">Error</DialogTitle>*/}
-                        {/*<DialogContent>*/}
-                            {/*<DialogContentText>*/}
-                                {/*You have insufficient coins to make this transaction*/}
-                            {/*</DialogContentText>*/}
-                        {/*</DialogContent>*/}
-                        {/*<DialogActions>*/}
-                            {/*<Button onClick={e => {*/}
-                                {/*// this.saveUser(e.target.value);*/}
-                                {/*e.openCoins = false;*/}
-                                {/*// this.state.openCoins = false;*/}
-                            {/*}} color="primary">*/}
-                                {/*OK*/}
-                            {/*</Button>*/}
-                        {/*</DialogActions>*/}
-                    {/*</Dialog>*/}
-                {/*</div>*/}
                 <div>{this.usernameInput()}</div>
                 <div>{this.submitError()}</div>
                 <div>{this.logoutButton()}</div>
